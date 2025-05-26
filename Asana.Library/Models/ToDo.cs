@@ -6,29 +6,30 @@ using System.Threading.Tasks;
 
 namespace Asana.Library.Models
 {
-    public class Todo
+    public class ToDo
     {
-        public string name {
-            get {
-                return name;
-            }
-            set
-            {
-                if (name != value) { 
-                    name = value;
-                }
-            }
-        }
-        public string description;
-        public bool isDone;
-        public int priority;
+        //public string Name {
+        //    get {
+        //        return Name;
+        //    }
+        //    set
+        //    {
+        //        if (Name != value) { 
+        //            Name = value;
+        //        }
+        //    }
+        //}
 
-        public Todo()
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public bool? IsCompleted { get; set; }
+        public int? Priority { get; set; }
+
+        // overrides the to string function
+        public override string ToString()
         {
-            name = "test";
+            return $"{Name} - {Description}";
         }
-      
-
     }
 
 }
