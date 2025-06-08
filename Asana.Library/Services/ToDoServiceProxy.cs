@@ -9,25 +9,35 @@ namespace Asana.Library.Services
 {
     public class ToDoServiceProxy
     {
-        public List<ToDo> toDos;
+        //public List<ToDo> toDos;
+        public List<Project> projects;
+        // this would be changed via a function that sets the current project so it is private
+        private int currentProject = 0;
+
 
         private ToDoServiceProxy()
         {
-            toDos = new List<ToDo>();
+            // just a project here? or a list of projects
+            //toDos = new List<ToDo>();
+            projects = new List<Project>();
+            var firstProj = new Project { Name = "Default", Description = "Default", Id = ++projItemCount };
+            projects.Add(firstProj);
         }
 
         private static ToDoServiceProxy? instance;
 
-        private int nextKey
+       
+
+        private int nextProjectKey
         {
+            // everytime this int is fetched the code inside of it runs
             get
             {
-                if (toDos.Any())
+                if (instance == null)
                 {
-                    return toDos.Select(t => t.Id).Max() + 1;
+                    instance
                 }
-                return 1;
-            }
+            } 
         }
 
         public static ToDoServiceProxy Current

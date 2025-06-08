@@ -49,7 +49,7 @@ namespace Asana
                     switch (choiceInt)
                     {
                         case 1:
-                            // create todo
+                            // create todo for current project
                             var toDo = new ToDo();
                             Console.Write("Name: ");
                             toDo.Name = Console.ReadLine();
@@ -58,6 +58,9 @@ namespace Asana
                             toDo.IsCompleted = false;
                             toDo.Id = ++itemCount;
                             projects[currentProject].Add(toDo);
+
+                            
+
                             break;
                         case 2:
                             // delete todo

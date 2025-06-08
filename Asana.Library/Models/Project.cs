@@ -84,5 +84,20 @@ namespace Asana.Library.Models
         {
             return $"[{Id}] {Name} - {Description}";
         }
+
+        // automatic id generation for toDos
+        private int nextKey
+        {
+            get
+            {
+                // here i can call a function within project that does exactly this, but
+                // this should be doing everything the class file should only be properties?
+                if (ProjectToDos.Any())
+                {
+                    return ProjectToDos.Select(t => t.Id).Max() + 1;
+                }
+                return 1;
+            }
+        }
     }
 }
