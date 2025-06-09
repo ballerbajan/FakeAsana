@@ -1,5 +1,8 @@
 ﻿using Asana.Library.Models;
+using Asana.Library.Services;
 using System;
+
+//using namespace Asana.Library.Services;
 
 namespace Asana
 {
@@ -7,28 +10,19 @@ namespace Asana
     {
         public static void Main(string[] args)
         {
-            var projects = new List<Project>();
-            var currentProject = 0;
-            // var is like var is js and auto in c
-            //var toDos = new List<ToDo>();
             int choiceInt;
-            var itemCount = 0;
-            var projItemCount = 0;
-            
-            var firstProj = new Project { Name = "Default", Description = "Default", Id = ++projItemCount};
 
+            var service = ToDoServiceProxy.Current;
             
-
-            projects.Add(firstProj);
 
             do
             {
-                Console.WriteLine($"\nCurrent Project:\n{projects[currentProject].Name}");
+                Console.WriteLine($"\nCurrent Project:\n{service.CurrentProject?.Name}");
                 Console.WriteLine("Choose a new menu option");
                 Console.WriteLine("1. Create a ToDo");
                 Console.WriteLine("2. Delete a ToDo");
                 Console.WriteLine("3. Update a ToDo");
-                Console.WriteLine("4. List all ToDos");
+                Console.WriteLine("4. List all ToDos"); 
                 Console.WriteLine("5. List all Outstanding ToDos");
                 Console.WriteLine("6. Create a Project");
                 Console.WriteLine("7. Delete a Project");
@@ -56,30 +50,29 @@ namespace Asana
                             Console.Write("Description: ");
                             toDo.Description = Console.ReadLine();
                             toDo.IsCompleted = false;
-                            toDo.Id = ++itemCount;
-                            projects[currentProject].Add(toDo);
-
-                            
+                            service.CurrentProject?.Add(toDo);
 
                             break;
                         case 2:
                             // delete todo
-                            projects[currentProject].PrintToDos();
+                            service.CurrentProject.PrintToDos();
                             Console.WriteLine("ToDo to Delete: ");
                             // gets the id to delete
                             var toDoChoice = int.Parse(Console.ReadLine() ?? "0");
 
-                            projects[currentProject].Remove(toDoChoice);
+                            service.CurrentProject.Remove(toDoChoice);
+
 
                             break;
                         case 3:
                             // update todo
-                            projects[currentProject].PrintToDos();
+                            service.CurrentProject.PrintToDos();
+
                             Console.WriteLine("ToDo to Update: ");
                             var toDoChoiceUpdate = int.Parse(Console.ReadLine() ?? "0");
 
-                            projects[currentProject].Update(toDoChoiceUpdate);
-                            
+                            service.CurrentProject.Update(toDoChoiceUpdate);
+
                             break;
                         case 4:
                             // print ALL todos
@@ -91,7 +84,7 @@ namespace Asana
                             // cant modify this list during foreach loop since during the loop it
                             // already has its bounds set, so chainging the number of things in the
                             // list will throw an exception
-                
+
                             // passes every item from the list to console.writeline
                             //toDos.ForEach(Console.WriteLine);
                             // longer version of same thing
@@ -99,13 +92,19 @@ namespace Asana
                             //toDos.ForEach(t=>Console.WriteLine(t));
 
                             //projects[currentProject].PrintToDos();
-                            projects.ForEach(p=>p.PrintToDos());
+
+
+                            // can be made into a single call to a print function within the service
+                            foreach (var p in service.projects)
+                            {
+                                p.PrintToDos();
+                            }
                             break;
                         case 5:
                             // list outstanding
-                           
-                            Console.WriteLine($"Completed in Current Project {projects[currentProject].Name}: {projects[currentProject].CompletePercent}%");
-                            projects[currentProject].ListOuttandingTodos();
+
+                            Console.WriteLine($"Completed in Current Project {service.CurrentProject.Name}: {service.CurrentProject.CompletePercent}%");
+                            service.CurrentProject.ListOuttandingTodos();
 
                             break;
                         case 6:
@@ -115,35 +114,35 @@ namespace Asana
                             proj.Name = Console.ReadLine();
                             Console.Write("Description: ");
                             proj.Description = Console.ReadLine();
-                            proj.Id = ++projItemCount;
-
-                            projects.Add(proj);
+                            
+                            service.AddProj(proj);
                             break;
                         case 7:
                             // delete a project
-                            projects.ForEach(Console.WriteLine);
+
+                            service.projects.ForEach(Console.WriteLine);
 
                             Console.WriteLine("Project to Delete: ");
                             var projDelChoice = int.Parse(Console.ReadLine() ?? "0");
 
-                            var reference = projects.FirstOrDefault(t => t.Id == projDelChoice);
+                            var reference = service.projects.FirstOrDefault(t => t.Id == projDelChoice);
                             if (reference != null)
                             {
-                                projects.Remove(reference);
-                                currentProject = 0;
-                            
+                                service.projects.Remove(reference);
+                                service.ChangeCurrentProject(0); // switch first project in list, defaulted value
                             }
-                           
+
                             break;
                         case 8:
                             // update a project
 
-                            projects.ForEach(Console.WriteLine);
+                            service.projects.ForEach(Console.WriteLine);
+                         
 
                             Console.WriteLine("Project to Update: ");
                             var projUpChoice = int.Parse(Console.ReadLine() ?? "0");
 
-                            var referenceUpdate = projects.FirstOrDefault(t => t.Id == projUpChoice);
+                            var referenceUpdate = service.projects.FirstOrDefault(t => t.Id == projUpChoice);
 
                             if (referenceUpdate != null)
                             {
@@ -151,30 +150,32 @@ namespace Asana
                                 referenceUpdate.Name = Console.ReadLine();
                                 Console.Write("Description: ");
                                 referenceUpdate.Description = Console.ReadLine();
-                            }                 
+                            }
                             break;
                         case 9:
                             // list ALL projects
-                            projects.ForEach(Console.WriteLine);
+
+                            service.projects.ForEach(Console.WriteLine);
                             break;
                         case 10:
                             // switch projects
-                            projects.ForEach(Console.WriteLine);
+
+                            service.projects.ForEach(Console.WriteLine);
                             Console.WriteLine("Project to Swap to: ");
 
                             var projSwapChoice = int.Parse(Console.ReadLine() ?? "0");
 
-                            var referenceSwap = projects.FirstOrDefault(t => t.Id == projSwapChoice);
+                            var referenceSwap = service.projects.FirstOrDefault(t => t.Id == projSwapChoice);
 
                             if (referenceSwap != null)
                             {
-                                currentProject = projects.IndexOf(referenceSwap);
+                                service.ChangeCurrentProject(projSwapChoice);
                             }
 
                             break;
                         case 11:
                             // list all todos in given project
-                            projects[currentProject].PrintToDos();
+                            service.CurrentProject?.PrintToDos();
                             break;
                         case 12:
                             // exit
@@ -190,11 +191,7 @@ namespace Asana
                 {
                     Console.WriteLine($"err {choice} is not valid");
                 }
-                //if (toDos.Any()) // if there is anything in the list then run
-                //{
-                //    // automatically calls tostring here so overload works
-                //    Console.WriteLine(toDos.Last());
-                //}
+    
             }while (choiceInt!=12);
         }
     }

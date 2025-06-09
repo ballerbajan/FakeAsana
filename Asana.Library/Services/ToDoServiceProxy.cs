@@ -9,34 +9,47 @@ namespace Asana.Library.Services
 {
     public class ToDoServiceProxy
     {
-        //public List<ToDo> toDos;
-        public List<Project> projects;
+        public List<Project> projects { get; set; } = new List<Project>();
         // this would be changed via a function that sets the current project so it is private
-        private int currentProject = 0;
+        // why have an int for curr proje why not just a reference to the project?
+      
+        private Project? currentProject;
 
-
-        private ToDoServiceProxy()
+        public Project? CurrentProject
         {
-            // just a project here? or a list of projects
-            //toDos = new List<ToDo>();
-            projects = new List<Project>();
-            var firstProj = new Project { Name = "Default", Description = "Default", Id = ++projItemCount };
-            projects.Add(firstProj);
+            get
+            {
+                // if current proj is not set, return the first project
+                return currentProject ?? projects.FirstOrDefault();
+            }
+            private set
+            {
+                currentProject = value;
+            }
         }
 
         private static ToDoServiceProxy? instance;
 
-       
+        private ToDoServiceProxy()
+        {
+            if (instance == null)
+            {
+                var firstProj = new Project { Name = "Default", Description = "Default", Id = nextProjectKey };
+                projects.Add(firstProj);
+                currentProject = firstProj;
+            }
+        }
 
         private int nextProjectKey
         {
             // everytime this int is fetched the code inside of it runs
             get
             {
-                if (instance == null)
+                if (projects.Any())
                 {
-                    instance
+                    return projects.Select(p => p.Id).Max() + 1;
                 }
+                return 1;
             } 
         }
 
@@ -52,58 +65,29 @@ namespace Asana.Library.Services
                 return instance;
             }
         }
-        public void CreateToDo(ToDo toDo)
-        {
-            if (toDo.Id == 0)
-            {
-                toDo.Id = nextKey;
-                toDos.Add(toDo);
-            }
-        }
 
-        public void DisplayToDos(bool isShowCompleted = false)
+        public void ChangeCurrentProject(int projectId)
         {
-            if (isShowCompleted)
+            var project = projects.FirstOrDefault(p => p.Id == projectId);
+            if (project != null)
             {
-                toDos.ForEach(Console.WriteLine);
+                CurrentProject = project;
+            }
+            else if (projectId == 0)
+            {
+                // if projectId is 0, switch to the first project
+                CurrentProject = projects[0];
             }
             else
             {
-                toDos.Where(t => (t != null) && !(t?.IsCompleted ?? false))
-                                .ToList()
-                                .ForEach(Console.WriteLine);
+                throw new ArgumentException("Project not found");
             }
         }
 
-        public void DeleteToDo()
+        public void AddProj(Project n)
         {
-            toDos.ForEach(Console.WriteLine);
-            Console.Write("ToDo to Delete: ");
-            var toDoChoice = int.Parse(Console.ReadLine() ?? "0");
-
-            var reference = toDos.FirstOrDefault(t => t.Id == toDoChoice);
-            if (reference != null)
-            {
-                toDos.Remove(reference);
-            }
+            n.Id = nextProjectKey;
+            projects.Add(n);
         }
-
-        public void UpdateToDo()
-        {
-            toDos.ForEach(Console.WriteLine);
-            Console.Write("ToDo to Update: ");
-            var toDoChoice = int.Parse(Console.ReadLine() ?? "0");
-            var updateReference = toDos.FirstOrDefault(t => t.Id == toDoChoice);
-
-            if (updateReference != null)
-            {
-                Console.Write("Name:");
-                updateReference.Name = Console.ReadLine();
-                Console.Write("Description:");
-                updateReference.Description = Console.ReadLine();
-            }
-
-        }
-
     }
 }

@@ -53,7 +53,6 @@ namespace Asana.Library.Models
         public void PrintToDos()
         {
             ProjectToDos.ForEach(Console.WriteLine);
-
         }
 
         // update a todo in a project
