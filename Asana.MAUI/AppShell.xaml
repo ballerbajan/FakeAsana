@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Asana.MAUI.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Asana.MAUI"
+    xmlns:views="clr-namespace:Asana.MAUI.Views"
+    Title="Asana.MAUI">
+    <!-- xml name space we adding xmlns:views to get that path-->
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+        <!--data template is the actual file
+        the main page includes the code behind and xaml file with corresponding name-->
+    <ShellContent
+        Title="ToDo Details"
+        ContentTemplate="{DataTemplate views:ToDoDetailView}"
+        Route="ToDoDetails" />
+        <!-- path to views-->
+</Shell>

@@ -8,17 +8,12 @@ namespace Asana.Library.Models
 {
     public class ToDo
     {
-        //public string Name {
-        //    get {
-        //        return Name;
-        //    }
-        //    set
-        //    {
-        //        if (Name != value) { 
-        //            Name = value;
-        //        }
-        //    }
-        //}
+       
+        public ToDo()
+        {
+            Id = 0;
+            IsCompleted = false;
+        }
 
         // we dont want our Id to be null cus tf does that mean
         public int Id {  get; set; }
@@ -26,7 +21,6 @@ namespace Asana.Library.Models
         public string? Description { get; set; }
         public bool? IsCompleted { get; set; }
         public int? Priority { get; set; }
-        public int ProjectId { get; set; }
 
         // overrides the to string function
         public override string ToString()

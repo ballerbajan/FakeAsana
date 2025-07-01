@@ -14,67 +14,90 @@ namespace Asana.Library.Models
         public float CompletePercent { 
             get 
             { 
-                if (ProjectToDos.Count == 0)
+                if (_toDoList.Count == 0)
                     return 0;
-                int total = ProjectToDos.Count;
-                int completed = ProjectToDos.Count(t => t.IsCompleted == true);
+                int total = _toDoList.Count;
+                int completed = _toDoList.Count(t => t.IsCompleted == true);
 
                 return (float)completed / total * 100;
             } 
         }
 
-        // need to worry about ids when things get deleted here
-        // can do the reference index trick to get the index and set
-        // the correct current project from that
-        private List<ToDo> ProjectToDos { get; set; } = new List<ToDo>();
-        
-        // Adds a todo to internal todo list
-        public void Add(ToDo t)
+        // we will have a private backing for ToDo so that we dont have to show all todo's
+        // or when we need to convert to observable it doesnt take forever
+        //private List<ToDo>? _toDoList;
+        private List<ToDo> _toDoList = new List<ToDo>();
+
+        public List<ToDo> ToDos
         {
-            ProjectToDos.Add(t);
-        }
-        // takes in an interger of the id to remove from the list of todos
-        public bool Remove(int idToRemove)
-        {
-            // first is a linq method that takes in a function as a parameter.
-            // first loops through the ienum which the list is, and returns the first true
-            // so the lambda here, is looking at a single object in the list
-            // more specifically the id
-            // first or defalut gives null if not found
-            var reference = ProjectToDos.FirstOrDefault(t => t.Id == idToRemove);
-            if (reference != null)
+            get
             {
-                ProjectToDos.Remove(reference);
-                return true;
+                return _toDoList.Take(100).ToList();
             }
-            return false;
+            private set
+            {
+                if (value != _toDoList)
+                {
+                    _toDoList = value;
+                }
+            }
         }
+
+        //public List<ToDo> ToDos { get; set; }
+
+        // Adds a todo to internal todo list
+        //public void Add(ToDo t)
+        //{
+        //    if (t.Id == 0)
+        //        t.Id = NextKey; // sets the id to the next key
+        //    _toDoList.Add(t);
+        //}
+
+        // update a todo in a project
+        //public ToDo? Update(ToDo? todo)
+        //{
+        //    return todo;
+        //}
+
+
+        public ToDo? AddOrUpdate(ToDo? toDo)
+        {
+            if (toDo != null && toDo.Id == 0)
+            {
+                toDo.Id = NextKey;
+                _toDoList.Add(toDo);
+            }
+
+            return toDo;
+        }
+
+        // deletes by reference
+        public bool Remove(ToDo? toDo)
+        {
+            if (toDo == null)
+            {
+                return false;
+            }
+
+            _toDoList.Remove(toDo);
+            return true;
+        }
+
         // list todos in project
         public void PrintToDos()
         {
-            ProjectToDos.ForEach(Console.WriteLine);
+            _toDoList.ForEach(Console.WriteLine);
         }
 
-        // update a todo in a project
-        public bool Update(int idToUpdate)
+        public ToDo? GetById(int id)
         {
-            var referenceUpdate = ProjectToDos.FirstOrDefault(t => t.Id == idToUpdate);
-
-            if (referenceUpdate != null)
-            {
-                Console.Write("Name: ");
-                referenceUpdate.Name = Console.ReadLine();
-                Console.Write("Description: ");
-                referenceUpdate.Description = Console.ReadLine();
-                return true;
-            }
-            return false;
+            return _toDoList.FirstOrDefault(t => t.Id == id);
         }
 
         // list outstanding todos
         public void ListOuttandingTodos()
         {
-            ProjectToDos.Where(t => (t != null) && !(t?.IsCompleted ?? false))
+            _toDoList.Where(t => (t != null) && !(t?.IsCompleted ?? false))
                                 .ToList()
                                 .ForEach(Console.WriteLine);
         }
@@ -85,15 +108,15 @@ namespace Asana.Library.Models
         }
 
         // automatic id generation for toDos
-        private int nextKey
+        private int NextKey
         {
             get
             {
                 // here i can call a function within project that does exactly this, but
                 // this should be doing everything the class file should only be properties?
-                if (ProjectToDos.Any())
+                if (_toDoList.Any())
                 {
-                    return ProjectToDos.Select(t => t.Id).Max() + 1;
+                    return _toDoList.Select(t => t.Id).Max() + 1;
                 }
                 return 1;
             }

@@ -17,7 +17,7 @@ namespace Asana
 
             do
             {
-                Console.WriteLine($"\nCurrent Project:\n{service.CurrentProject?.Name}");
+                Console.WriteLine($"\nCurrent Project:\n{service.CurrentProject}");
                 Console.WriteLine("Choose a new menu option");
                 Console.WriteLine("1. Create a ToDo");
                 Console.WriteLine("2. Delete a ToDo");
@@ -50,7 +50,7 @@ namespace Asana
                             Console.Write("Description: ");
                             toDo.Description = Console.ReadLine();
                             toDo.IsCompleted = false;
-                            service.CurrentProject?.Add(toDo);
+                            service.CurrentProject?.AddOrUpdate(toDo);
 
                             break;
                         case 2:
@@ -60,9 +60,13 @@ namespace Asana
                             // gets the id to delete
                             var toDoChoice = int.Parse(Console.ReadLine() ?? "0");
 
-                            service.CurrentProject.Remove(toDoChoice);
+                            var referenceDelete = service.CurrentProject.GetById(toDoChoice);
+                            if (referenceDelete != null)
+                            {
+                                service.CurrentProject.Remove(referenceDelete);
 
-
+                            }
+           
                             break;
                         case 3:
                             // update todo
@@ -71,8 +75,17 @@ namespace Asana
                             Console.WriteLine("ToDo to Update: ");
                             var toDoChoiceUpdate = int.Parse(Console.ReadLine() ?? "0");
 
-                            service.CurrentProject.Update(toDoChoiceUpdate);
+                            var referenceUpdate = service.CurrentProject.GetById(toDoChoiceUpdate);
 
+                            if (referenceUpdate != null)
+                            {
+                                Console.Write("Name: ");
+                                referenceUpdate.Name = Console.ReadLine();
+                                Console.Write("Description: ");
+                                referenceUpdate.Description = Console.ReadLine();
+                            }
+
+                            service.CurrentProject.AddOrUpdate(referenceUpdate);
                             break;
                         case 4:
                             // print ALL todos
@@ -95,7 +108,7 @@ namespace Asana
 
 
                             // can be made into a single call to a print function within the service
-                            foreach (var p in service.projects)
+                            foreach (var p in service.Projects)
                             {
                                 p.PrintToDos();
                             }
@@ -120,15 +133,15 @@ namespace Asana
                         case 7:
                             // delete a project
 
-                            service.projects.ForEach(Console.WriteLine);
+                            service.Projects.ForEach(Console.WriteLine);
 
                             Console.WriteLine("Project to Delete: ");
                             var projDelChoice = int.Parse(Console.ReadLine() ?? "0");
 
-                            var reference = service.projects.FirstOrDefault(t => t.Id == projDelChoice);
+                            var reference = service.Projects.FirstOrDefault(t => t.Id == projDelChoice);
                             if (reference != null)
                             {
-                                service.projects.Remove(reference);
+                                service.Projects.Remove(reference);
                                 service.ChangeCurrentProject(0); // switch first project in list, defaulted value
                             }
 
@@ -136,36 +149,36 @@ namespace Asana
                         case 8:
                             // update a project
 
-                            service.projects.ForEach(Console.WriteLine);
+                            service.Projects.ForEach(Console.WriteLine);
                          
 
                             Console.WriteLine("Project to Update: ");
                             var projUpChoice = int.Parse(Console.ReadLine() ?? "0");
 
-                            var referenceUpdate = service.projects.FirstOrDefault(t => t.Id == projUpChoice);
+                            var projectToUpdate = service.Projects.FirstOrDefault(t => t.Id == projUpChoice);
 
-                            if (referenceUpdate != null)
+                            if (projectToUpdate != null)
                             {
                                 Console.Write("Name: ");
-                                referenceUpdate.Name = Console.ReadLine();
+                                projectToUpdate.Name = Console.ReadLine();
                                 Console.Write("Description: ");
-                                referenceUpdate.Description = Console.ReadLine();
+                                projectToUpdate.Description = Console.ReadLine();
                             }
                             break;
                         case 9:
                             // list ALL projects
 
-                            service.projects.ForEach(Console.WriteLine);
+                            service.Projects.ForEach(Console.WriteLine);
                             break;
                         case 10:
                             // switch projects
 
-                            service.projects.ForEach(Console.WriteLine);
+                            service.Projects.ForEach(Console.WriteLine);
                             Console.WriteLine("Project to Swap to: ");
 
                             var projSwapChoice = int.Parse(Console.ReadLine() ?? "0");
 
-                            var referenceSwap = service.projects.FirstOrDefault(t => t.Id == projSwapChoice);
+                            var referenceSwap = service.Projects.FirstOrDefault(t => t.Id == projSwapChoice);
 
                             if (referenceSwap != null)
                             {

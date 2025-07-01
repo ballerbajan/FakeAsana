@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Asana.MAUI.MainPage"
+             NavigatedTo="ContentPage_NavigatedTo"
+             NavigatedFrom="ContentPage_NavigatedFrom">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition/>
+
+                </Grid.RowDefinitions>
+                <!--top part-->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="5*"/>
+
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="Show Completed Tasks:"/>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding IsShowCompleted}"/>
+                </Grid>
+                <!--mid part-->
+                <!--whatever the user clicks is selected item, from the list of ToDos-->
+                <ListView Grid.Row="1"  ItemsSource="{Binding ToDos}"
+                          SelectedItem="{Binding SelectedToDo}">
+                    <!--we going to make it so that we bind to specific todo
+                    allowing us to see and touch the data in a todo-->
+                    <ListView.ItemTemplate>
+                        <!--template to reuse code-->
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="10*"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!--set what is in columns-->
+                                    <CheckBox IsChecked="{Binding Model.IsCompleted}" Grid.Column="0"/>
+                                    <!--Whole grid is for todo name and descriptor-->
+                                    <Grid Grid.Column="1">
+                                        <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Label Grid.Row="0" TextColor="Red" Text="{Binding Model.Name}"/>
+                                        <Label Grid.Row="1" Text="{Binding Model.Description}"/>
+                                    </Grid>
+                                    <Button Grid.Column="2" Text="Delete" Clicked="LineDeleteClicked" Command="{Binding DeleteCommand}"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!--bot part-->
+                <VerticalStackLayout Grid.Row="2">
+                    <Button Text="Add New ToDo" Clicked="AddNewClicked"/>
+                    <Button Text="Edit Selected ToDo" Clicked="EditClicked"/>
+                    <Button Text="Delete Selected ToDo" Clicked="DeleteClicked"/>
+                </VerticalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
