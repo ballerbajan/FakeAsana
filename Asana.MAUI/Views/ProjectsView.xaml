@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Asana.MAUI.Views.ProjectsView"
+             Title="ProjectsView"
+             NavigatedTo="ContentPage_NavigatedTo"
+             NavigatedFrom="ContentPage_NavigatedFrom">
+    <VerticalStackLayout>
+        <Label 
+            Text="Welcome to .NET MAUI!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Grid>
+            <ListView
+                ItemsSource="{Binding Projects}"
+                SelectedItem="{Binding SelectedProject}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="10*"/>
+
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Model.Id}"/>
+                                <Label Grid.Column="1" Text="{Binding Model.Name}"/>
+                                <Label Grid.Column="2" Text="{Binding Model.Description}"/>
+
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        <Button Text="Cancel" Clicked="CancelClicked"/>
+        <Button Text="Add Project" Clicked="AddClicked"/>
+        <Button Text="Delete Selected Project" Clicked="DeleteClicked"/>
+        <Button Text="Update Selected Project" Clicked="UpdateClicked"/>
+        <Button Text="Swap To Selected Project" Clicked="SwapClicked"/>
+        
+    </VerticalStackLayout>
+</ContentPage>

@@ -9,6 +9,7 @@
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
+            <Label Text="{Binding CurrentProj.Name, StringFormat='Current project: {0}'}" />
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -26,7 +27,7 @@
                     <Label Grid.Column="0" Text="Show Completed Tasks:"/>
                     <CheckBox Grid.Column="1" IsChecked="{Binding IsShowCompleted}"/>
                 </Grid>
-                <!--mid part-->
+                <!--Todos-->
                 <!--whatever the user clicks is selected item, from the list of ToDos-->
                 <ListView Grid.Row="1"  ItemsSource="{Binding ToDos}"
                           SelectedItem="{Binding SelectedToDo}">
@@ -41,19 +42,21 @@
                                         <ColumnDefinition Width="1*"/>
                                         <ColumnDefinition Width="10*"/>
                                         <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="1*"/>
                                     </Grid.ColumnDefinitions>
                                     <!--set what is in columns-->
                                     <CheckBox IsChecked="{Binding Model.IsCompleted}" Grid.Column="0"/>
                                     <!--Whole grid is for todo name and descriptor-->
                                     <Grid Grid.Column="1">
                                         <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
                                         </Grid.RowDefinitions>
                                         <Label Grid.Row="0" TextColor="Red" Text="{Binding Model.Name}"/>
                                         <Label Grid.Row="1" Text="{Binding Model.Description}"/>
                                     </Grid>
-                                    <Button Grid.Column="2" Text="Delete" Clicked="LineDeleteClicked" Command="{Binding DeleteCommand}"/>
+                                    <Label Text="{Binding Model.DueDate}" Grid.Column="2"/>
+                                    <Button Grid.Column="3" Text="Delete" Clicked="LineDeleteClicked" Command="{Binding DeleteCommand}"/>
                                 </Grid>
                             </ViewCell>
                         </DataTemplate>
@@ -64,6 +67,7 @@
                     <Button Text="Add New ToDo" Clicked="AddNewClicked"/>
                     <Button Text="Edit Selected ToDo" Clicked="EditClicked"/>
                     <Button Text="Delete Selected ToDo" Clicked="DeleteClicked"/>
+                    <Button Text="Manage Projects" Clicked="ProjectClicked"/>
                 </VerticalStackLayout>
             </Grid>
         </VerticalStackLayout>

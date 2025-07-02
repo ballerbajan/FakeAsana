@@ -128,7 +128,7 @@ namespace Asana
                             Console.Write("Description: ");
                             proj.Description = Console.ReadLine();
                             
-                            service.AddProj(proj);
+                            service.AddOrUpdateProject(proj);
                             break;
                         case 7:
                             // delete a project

@@ -21,6 +21,7 @@ namespace Asana.Library.Models
         public string? Description { get; set; }
         public bool? IsCompleted { get; set; }
         public int? Priority { get; set; }
+        public DateTime? DueDate { get; set; }
 
         // overrides the to string function
         public override string ToString()

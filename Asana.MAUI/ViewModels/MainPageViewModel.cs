@@ -19,7 +19,13 @@ namespace Asana.MAUI.ViewModels
         {
             _toDoSvc = ToDoServiceProxy.Current;
         }
-
+        public Project? CurrentProj
+        {
+            get
+            {
+                return _toDoSvc.CurrentProject;
+            }
+        }
         public int SelectedToDoId => SelectedToDo.Model?.Id ?? 0;
         public ToDoDetailViewModel SelectedToDo { get; set; }
 

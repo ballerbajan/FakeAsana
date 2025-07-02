@@ -9,7 +9,7 @@ namespace Asana.Library.Services
 {
     public class ToDoServiceProxy
     {
-        public List<Project> Projects { get; set; } = new List<Project>();
+        public List<Project> Projects { get; set; }
         // this would be changed via a function that sets the current project so it is private
         // why have an int for curr proje why not just a reference to the project?
       
@@ -37,31 +37,39 @@ namespace Asana.Library.Services
 
         private ToDoServiceProxy()
         {
+            Projects = new List<Project>();
             var firstProj = new Project { Name = "Default", Description = "Default", Id = NextProjectKey };
             firstProj.AddOrUpdate(new ToDo { 
                 Name = "First ToDo", 
                 Description = "This is the first todo", 
-                IsCompleted = false
+                IsCompleted = false,
+                DueDate = DateTime.Today
             });
             firstProj.AddOrUpdate(new ToDo
             {
                 Name = "Second ToDo",
                 Description = "This is the second todo",
-                IsCompleted = true
+                IsCompleted = true,
+                DueDate = DateTime.Today
+
+
             });
             firstProj.AddOrUpdate(new ToDo
             {
 
                 Name = "Third ToDo",
                 Description = "This is the third todo",
-                IsCompleted = false
+                IsCompleted = false,
+                DueDate = DateTime.Today
+
             });
             firstProj.AddOrUpdate(new ToDo
             {
 
                 Name = "Fourth ToDo",
                 Description = "This is the fourth todo",
-                IsCompleted = true
+                IsCompleted = true,
+                DueDate = DateTime.Today
             });
 
             Projects.Add(firstProj);
@@ -111,10 +119,29 @@ namespace Asana.Library.Services
             }
         }
 
-        public void AddProj(Project n)
+        public Project? AddOrUpdateProject(Project? n)
         {
-            n.Id = NextProjectKey;
-            Projects.Add(n);
+            if (n != null && n.Id == 0)
+            {
+                n.Id = NextProjectKey;
+                Projects.Add(n);
+            }
+            return n;
         }
+
+        public void RemoveProject(Project? n)
+        {
+            if (n != null && Projects.Contains(n))
+            {
+                Projects.Remove(n);
+            }
+
+            ChangeCurrentProject(0);
+        }
+
+        //public Project? GetProjectById(int projectId)
+        //{
+
+        //}
     }
 }
